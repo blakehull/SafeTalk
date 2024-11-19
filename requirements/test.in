@@ -1,0 +1,4 @@
+-r base.in
+-c base.txt
+
+pytest

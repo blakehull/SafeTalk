@@ -1,0 +1,4 @@
+black
+pip-tools
+ruff
+mypy
