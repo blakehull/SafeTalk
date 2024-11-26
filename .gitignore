@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# stuff
+.DS_store
+**/.DS_store
+*/.DS_store
+
 # C extensions
 *.so
 
@@ -164,3 +169,13 @@ cython_debug/
 
 # debug junk
 script.py
+
+# VSCode
+.vscode/*
+.vscode
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix

@@ -33,11 +33,11 @@ pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
-ruff==0.7.4
+ruff==0.8.0
     # via -r requirements/local.in
 typing-extensions==4.12.2
     # via mypy
-wheel==0.45.0
+wheel==0.45.1
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
