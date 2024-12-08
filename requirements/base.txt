@@ -7,7 +7,7 @@
 #
 annotated-types==0.7.0
     # via pydantic
-anyio==4.6.2.post1
+anyio==4.7.0
     # via httpx
 certifi==2024.8.30
     # via
@@ -35,13 +35,13 @@ jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
     # via jsonpatch
-langchain-core==0.3.21
+langchain-core==0.3.22
     # via langchain-ollama
 langchain-ollama==0.2.1
     # via -r requirements/base.in
 langsmith==0.1.147
     # via langchain-core
-ollama==0.4.2
+ollama==0.4.4
     # via langchain-ollama
 orjson==3.10.12
     # via langsmith
@@ -70,6 +70,7 @@ tenacity==9.0.0
     # via langchain-core
 typing-extensions==4.12.2
     # via
+    #   anyio
     #   langchain-core
     #   pydantic
     #   pydantic-core
