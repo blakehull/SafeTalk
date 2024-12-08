@@ -1,3 +1,0 @@
-
-class Factory(ABC):
-    pass

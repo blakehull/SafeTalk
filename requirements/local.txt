@@ -33,7 +33,7 @@ pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
-ruff==0.8.0
+ruff==0.8.1
     # via -r requirements/local.in
 typing-extensions==4.12.2
     # via mypy
