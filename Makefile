@@ -22,4 +22,7 @@ format:
 	$(ACTIVATE) black $(PROJECT) tests
 	$(ACTIVATE) ruff check --fix $(PROJECT) tests
 
-.PHONY: requirements start test format venv install
+app: venv
+	 $(ACTIVATE) PYTHONPATH=. streamlit run app/app.py
+
+.PHONY: requirements start test format venv install app

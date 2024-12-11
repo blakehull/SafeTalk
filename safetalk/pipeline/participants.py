@@ -32,8 +32,8 @@ class Therapist(Participant):
 class Patient(Participant):
     personality: ChatPromptTemplate
     name: str
-    llm: OllamaLLM = Field(default=OllamaLLM(model="llama3.2"))
-    memory: ShortTermMemory = Field(default=ShortTermMemory())
+    llm: OllamaLLM
+    memory: ShortTermMemory = Field(default_factory=ShortTermMemory)
 
     def responds(self, to_this: Message) -> Message:
         """

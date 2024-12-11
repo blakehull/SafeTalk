@@ -7,6 +7,8 @@ skills in a risk-free setting.
 The system utilizes language models like Ollama's Llama 3.2 to simulate realistic therapy conversations, and integrates
 a supervisor evaluation mechanism to assess therapist performance.
 
+running `make app` will launch a streamlit application allowing you to chat with a patient.
+
 ## Features
 
 - **Therapy Simulation**: Simulate therapy sessions between a virtual patient and a therapist.
@@ -25,6 +27,7 @@ make venv
 The pipeline runs a therapy session where a virtual patient (e.g. Mike) interacts with a therapist.
 The patient's personality is driven by a prompt template that simulates some mental illness, which in practice would be
 unknown to the therapist and part of them trying to understand the patient.
+
 The therapist’s performance is then evaluated by a supervisor.
 
 ### Key Components:
@@ -36,52 +39,12 @@ The therapist’s performance is then evaluated by a supervisor.
 - **Supervisor**: The supervisor evaluates the therapist's responses based on predefined criteria (e.g., empathy,
   effectiveness, engagement).
 
-### Example Script
+### Example
 
-Below is an example script that runs the entire therapy session and supervisor evaluation pipeline:
+To run the example (using the anxiety template), just run the make command below:
 
-```python
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
-from langchain_ollama import OllamaLLM
-
-from safetalk.pipeline.participants import Patient, Supervisor, Therapist
-from safetalk.pipeline.session import SupervisorSession, TherapySession
-
-# Load the patient prompt template
-with open('safetalk/meta/ollama/anxiety.template', 'r') as file:
-    file_contents = file.read()
-
-# Create the patient prompt template for therapy
-prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            file_contents,
-        ),
-        ("human", "{input}"),
-    ]
-)
-
-# Load supervisor evaluation template
-supervisor_prompt = PromptTemplate.from_file("safetalk/meta/ollama/supervisor.template")
-
-# Initialize the LLM model
-llm = OllamaLLM(model="llama3.2", temperature=0.8)
-
-# Create the patient, therapist, and session objects
-mike = Patient(personality=prompt, name="Mike", llm=llm)
-therapist = Therapist()
-
-# Start the therapy session
-session = TherapySession(therapist=therapist, patient=mike, history=[])
-session.start()
-
-# Create supervisor for evaluation
-supervisor = Supervisor(criteria=supervisor_prompt, llm=llm)
-evaluation = SupervisorSession(supervisor=supervisor, therapist=therapist, history=session.history)
-
-# Start the supervisor evaluation session
-evaluation.start()
+```shell
+make app
 ```
 
 ### Explanation of the Script:
@@ -97,9 +60,6 @@ evaluation.start()
 
 ## Usage
 
-To run a therapy session, simply execute the example script. You can modify the patient’s persona, adjust the LLM
-parameters, and customize the evaluation criteria to match different therapy scenarios.
-
 You can create new templates for different patient types or therapeutic approaches by generating new template files. I
 use the APA website to get case studies.
 
@@ -110,4 +70,3 @@ Future Development looks like:
 * Abstract LLM class so using another LLM is easily swapped out
 * Better pipelining
     * Placing prompts behind another interface
-* App integration
