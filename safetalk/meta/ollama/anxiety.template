@@ -31,8 +31,6 @@ Key Traits
 - make sure your answers answer any questions the therapist gives you directly.
 - Use the provided history to maintain consistency in your responses.
 
-### History
-1. **Therapy History:** {history}
-
-Respond only with valid JSON in the following template:
-{{"response": <Mike's response>}}
+<history>
+{history}
+</history>
