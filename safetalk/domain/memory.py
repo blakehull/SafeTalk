@@ -17,5 +17,5 @@ class ShortTermMemory(BaseModel):
             - None
         """
         for message in messages:
-            self.content.append(message)
+            self.content.append(message.model_dump())
         self.content = self.content[-4:]
