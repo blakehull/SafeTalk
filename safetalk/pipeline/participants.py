@@ -1,11 +1,11 @@
 from typing import Optional
 from uuid import uuid4
 
-from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
+from langchain_core.messages import AIMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.prompts.prompt import PromptTemplate
 from langchain_core.runnables import RunnableSequence
-from langchain_ollama import OllamaLLM
+from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 
 from safetalk.domain.chat import Message
@@ -32,7 +32,7 @@ class Therapist(Participant):
 class Patient(Participant):
     personality: ChatPromptTemplate
     name: str
-    llm: OllamaLLM
+    llm: ChatOllama
     memory: ShortTermMemory = Field(default_factory=ShortTermMemory)
 
     def responds(self, to_this: Message) -> Message:
@@ -45,14 +45,13 @@ class Patient(Participant):
         Returns:
              - The response from the patient
         """
-        pipeline: RunnableSequence = self.personality | self.llm | JsonOutputParser()
-        msg: dict = pipeline.invoke(
+        pipeline: RunnableSequence = self.personality | self.llm
+        msg: AIMessage = pipeline.invoke(
             {"input": to_this.content, "history": self.memory.content}
         )
-        output: str = msg["response"]
         response: Message = Message(
             role=self.name,
-            content=output,
+            content=msg.content,
         )
         self.memory.update([to_this, response])
         return response
@@ -60,7 +59,7 @@ class Patient(Participant):
 
 class Supervisor(Participant):
     criteria: PromptTemplate
-    llm: OllamaLLM = Field(default=OllamaLLM(model="llama3.2"))
+    llm: ChatOllama = Field(default=ChatOllama(model="llama3.2"))
 
     def evaluate(self, transcript: list[dict[str, str]]) -> str:
         """
@@ -72,6 +71,4 @@ class Supervisor(Participant):
         Returns:
             - the evaluation response
         """
-        return (self.criteria | self.llm | StrOutputParser()).invoke(
-            {"session": transcript}
-        )
+        return (self.criteria | self.llm).invoke({"session": transcript}).content

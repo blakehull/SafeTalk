@@ -1,6 +1,6 @@
 import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_ollama import OllamaLLM
+from langchain_ollama import ChatOllama
 
 from safetalk.domain.chat import Message
 from safetalk.pipeline.participants import Patient, Therapist
@@ -20,7 +20,7 @@ personality = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
-llm = OllamaLLM(model="llama3.2", temperature=0.8)
+llm = ChatOllama(model="llama3.2", temperature=0.8)
 
 patient = Patient(personality=personality, name="Mike", llm=llm)
 
