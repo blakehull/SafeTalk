@@ -63,7 +63,7 @@ langchain-core==0.3.24
     # via langchain-ollama
 langchain-ollama==0.2.1
     # via -r requirements/base.in
-langsmith==0.2.2
+langsmith==0.2.3
     # via langchain-core
 markdown-it-py==3.0.0
     # via rich
