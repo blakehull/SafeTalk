@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    entrypoint: [ "/usr/bin/bash", "/code/ollama_setup.sh" ]
+    ports:
+      - 11434:11434
+    volumes:
+      - ./ollama_setup.sh:/code/ollama_setup.sh
+      - ./ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: always
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    networks:
+      - ollama-docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ "gpu" ]
+              count: all  # Adjust count for the number of GPUs you want to use
+
+
+networks:
+  ollama-docker:
+    external: false

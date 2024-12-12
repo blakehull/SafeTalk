@@ -9,6 +9,16 @@ a supervisor evaluation mechanism to assess therapist performance.
 
 running `make app` will launch a streamlit application allowing you to chat with a patient.
 
+### Note (Mac Users)
+
+If you choose to use the Docker ollama, run `make docker-llama` but be warned - on Mac there is still no
+option for GPU support with Docker, so it will run on the CPU and things will be very slow.
+
+Personally, I would just run the [Mac Ollama distribution](https://ollama.com/) and have the server running locally
+using your GPU.
+
+If you're using Windows... you'll have to figure it out yourself :)
+
 ## Features
 
 - **Therapy Simulation**: Simulate therapy sessions between a virtual patient and a therapist.
@@ -67,6 +77,5 @@ use the APA website to get case studies.
 
 Future Development looks like:
 
-* Abstract LLM class so using another LLM is easily swapped out
 * Better pipelining
     * Placing prompts behind another interface

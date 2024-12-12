@@ -25,4 +25,7 @@ format:
 app:
 	 $(ACTIVATE) PYTHONPATH=. streamlit run app/app.py
 
+docker-llama:
+	docker-compose up -d
+
 .PHONY: requirements start test format venv install app
