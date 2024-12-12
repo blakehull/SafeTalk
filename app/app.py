@@ -3,6 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
 from safetalk.domain.chat import Message
+from safetalk.pipeline.llm import Ollama
 from safetalk.pipeline.participants import Patient, Therapist
 from safetalk.pipeline.session import TherapySession
 
@@ -11,7 +12,7 @@ therapist = Therapist()
 with open("safetalk/meta/ollama/anxiety.template", "r") as file:
     file_contents = file.read()
 
-personality = ChatPromptTemplate.from_messages(
+personality_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
@@ -20,9 +21,12 @@ personality = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
-llm = ChatOllama(model="llama3.2", temperature=0.8)
+llm = Ollama(
+    client=ChatOllama(model="llama3.2", temperature=0.8),
+    system_prompt=personality_prompt,
+)
 
-patient = Patient(personality=personality, name="Mike", llm=llm)
+patient = Patient(personality=llm, name="Mike")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
