@@ -2,14 +2,11 @@ from typing import Optional
 from uuid import uuid4
 
 from langchain_core.messages import AIMessage
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.prompts.prompt import PromptTemplate
-from langchain_core.runnables import RunnableSequence
-from langchain_ollama import ChatOllama
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from safetalk.domain.chat import Message
 from safetalk.domain.memory import ShortTermMemory
+from safetalk.pipeline.llm import LLM
 
 
 class Participant(BaseModel):
@@ -18,6 +15,8 @@ class Participant(BaseModel):
     """
 
     id: str = Field(default=str(uuid4()))
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class Therapist(Participant):
@@ -30,9 +29,8 @@ class Therapist(Participant):
 
 
 class Patient(Participant):
-    personality: ChatPromptTemplate
+    personality: LLM
     name: str
-    llm: ChatOllama
     memory: ShortTermMemory = Field(default_factory=ShortTermMemory)
 
     def responds(self, to_this: Message) -> Message:
@@ -45,8 +43,7 @@ class Patient(Participant):
         Returns:
              - The response from the patient
         """
-        pipeline: RunnableSequence = self.personality | self.llm
-        msg: AIMessage = pipeline.invoke(
+        msg: AIMessage = self.personality.invoke(
             {"input": to_this.content, "history": self.memory.content}
         )
         response: Message = Message(
@@ -58,8 +55,7 @@ class Patient(Participant):
 
 
 class Supervisor(Participant):
-    criteria: PromptTemplate
-    llm: ChatOllama = Field(default=ChatOllama(model="llama3.2"))
+    evaluator: LLM
 
     def evaluate(self, transcript: list[dict[str, str]]) -> str:
         """
@@ -71,4 +67,4 @@ class Supervisor(Participant):
         Returns:
             - the evaluation response
         """
-        return (self.criteria | self.llm).invoke({"session": transcript}).content
+        return self.evaluator.invoke({"session": transcript}).content
