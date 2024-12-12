@@ -19,10 +19,10 @@ test:
 	$(ACTIVATE) pytest .
 
 format:
-	$(ACTIVATE) black $(PROJECT) tests
-	$(ACTIVATE) ruff check --fix $(PROJECT) tests
+	$(ACTIVATE) black $(PROJECT) tests app
+	$(ACTIVATE) ruff check --fix $(PROJECT) tests app
 
-app: venv
+app:
 	 $(ACTIVATE) PYTHONPATH=. streamlit run app/app.py
 
 .PHONY: requirements start test format venv install app
