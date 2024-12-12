@@ -1,10 +1,20 @@
 import unittest
-from unittest.mock import patch
 
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import AIMessage
 
 from safetalk.domain.chat import Message
+from safetalk.pipeline.llm import LLM
 from safetalk.pipeline.participants import Participant, Patient, Therapist
+
+
+class MockLLM(LLM):
+
+    def __init__(self):
+        super().__init__(None)
+        self.response = "test response"
+
+    def invoke(self, *args, **kwargs):
+        return AIMessage(content=self.response)
 
 
 class TestParticipant(unittest.TestCase):
@@ -27,21 +37,12 @@ class TestTherapist(unittest.TestCase):
 
 class TestPatient(unittest.TestCase):
 
-    @patch("safetalk.pipeline.participants.ChatOllama")
-    def test_patient(self, mock_llm):
-        personality = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    "we are testing",
-                ),
-                ("human", "{input}"),
-            ]
-        )
-        mock_llm.invoke.return_value = "hi"
-        p = Patient(personality=personality, name="test patient", llm=mock_llm)
+    def test_patient_responds(self):
+        mock_llm = MockLLM()
+        patient_name = "test_patient"
+        p = Patient(personality=mock_llm, name=patient_name)
         returned_value = p.responds(
             to_this=Message(role="therapist", content="hi there")
         )
-
-        print(returned_value)
+        self.assertEqual(returned_value.role, patient_name)
+        self.assertEqual(returned_value.content, mock_llm.response)
