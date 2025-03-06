@@ -1,14 +1,17 @@
+from logging import getLogger
+
 import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_ollama import ChatOllama
 
 from safetalk.domain.chat import Message
-from safetalk.pipeline.llm import Ollama
+from safetalk.pipeline.llm import Bedrock
 from safetalk.pipeline.participants import Patient, Therapist
 from safetalk.pipeline.session import TherapySession
 
-st.title("SafeTalk | Sharpen Your Skills")
+st.set_page_config(page_title="SafeTalk", layout="wide")
+st.markdown("<h1><center>SafeTalk | Sharpen Your Skills</center></h1>", unsafe_allow_html=True)
 therapist = Therapist()
+logger = getLogger(__name__)
 with open("safetalk/meta/ollama/anxiety.template", "r") as file:
     file_contents = file.read()
 
@@ -21,8 +24,8 @@ personality_prompt = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
-llm = Ollama(
-    client=ChatOllama(model="llama3.2", temperature=0.8),
+llm = Bedrock(
+    client=None,
     system_prompt=personality_prompt,
 )
 
@@ -49,3 +52,4 @@ if prompt := st.chat_input(""):
     st.session_state.messages.append(
         {"role": "assistant", "content": patient_says.content}
     )
+    logger.info(st.session_state.messages)

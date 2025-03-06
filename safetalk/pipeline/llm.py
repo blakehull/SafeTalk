@@ -1,5 +1,6 @@
 from abc import ABC
 
+from langchain_aws import ChatBedrock
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableSequence
 from langchain_ollama import ChatOllama
@@ -23,6 +24,20 @@ class Ollama(LLM):
 
     def __init__(self, client: ChatOllama | None, system_prompt: ChatPromptTemplate):
         super().__init__(ChatOllama(model="llama3.2") if not client else client)
+        self.pipeline: RunnableSequence = system_prompt | self.client
+
+    def invoke(self, content: dict):
+        return self.pipeline.invoke(input=content)
+
+
+class Bedrock(LLM):
+
+    def __init__(self, client: ChatBedrock | None, system_prompt: ChatPromptTemplate):
+        super().__init__(
+            ChatBedrock(model="us.meta.llama3-3-70b-instruct-v1:0", temperature=0.8)
+            if not client
+            else client
+        )
         self.pipeline: RunnableSequence = system_prompt | self.client
 
     def invoke(self, content: dict):
